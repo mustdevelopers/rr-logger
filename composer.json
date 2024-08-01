@@ -1,0 +1,11 @@
+{
+    "name": "must/rr-logger",
+    "description": "Request and Response Logger for API Projects",
+    "type": "library",
+    "require": {
+        "phpunit/phpunit": "^11.2",
+        "orchestra/testbench": "^9.2"
+    },
+    "license": "MIT",
+    "minimum-stability": "stable"
+}
