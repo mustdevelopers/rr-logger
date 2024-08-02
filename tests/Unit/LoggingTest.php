@@ -4,7 +4,7 @@ namespace MUST\RRLogger\Tests\Unit;
 
 use MUST\RRLogger\Tests\TestCase;
 use Illuminate\Http\Request;
-use MUST\RRLogger\Http\Middleware\LogRequests;
+use MUST\RRLogger\Http\Middleware\WriteRRLogs;
 
 class LoggingTest extends TestCase
 {
@@ -13,7 +13,7 @@ class LoggingTest extends TestCase
         // Given we have a request
         $request = new Request();
 
-        (new LogRequests())->handle($request, function () {
+        (new WriteRRLogs())->handle($request, function () {
             return (object) [
                 'status' => 200,
                 'success' => true,
@@ -30,7 +30,7 @@ class LoggingTest extends TestCase
         // Assert that the response is successful
         $response->assertStatus(200);
 
-        // Assert that the RRLogger record was created
+        //Assert that the RRLogger record was created
         $this->assertDatabaseHas('rrloggers', [
             'endpoint' => '/api/test-endpoint',
             'method' => 'POST',
