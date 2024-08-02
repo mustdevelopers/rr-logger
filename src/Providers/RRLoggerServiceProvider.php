@@ -4,7 +4,7 @@ namespace MUST\RRLogger\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Contracts\Http\Kernel;
-use MUST\RRLogger\Http\Middleware\LogRequests;
+use MUST\RRLogger\Http\Middleware\WriteRRLogs;
 
 class RRLoggerServiceProvider extends ServiceProvider
 {
@@ -24,6 +24,6 @@ class RRLoggerServiceProvider extends ServiceProvider
 
         $this->loadRoutesFrom(__DIR__.'/../../routes/api.php');
 
-        $kernel->appendMiddlewareToGroup('api', LogRequests::class); // Add it after all other middlewares
+        $kernel->appendMiddlewareToGroup('api', WriteRRLogs::class); // Add it after all other middlewares
     }
 }

@@ -27,7 +27,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "MUST\\RRLogger\\RRLoggerServiceProvider"
+                "MUST\\RRLogger\\Providers\\RRLoggerServiceProvider"
             ]
         }
     },
