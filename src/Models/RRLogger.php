@@ -22,6 +22,6 @@ class RRLogger extends Model
 
     public function prunable(): Builder
     {
-        return static::where('created_at', '<=', now()->subDays(config('rrloger.retention_days')));
+        return static::where('created_at', '<=', now()->subDays(config('rrlogger.retention_days')));
     }
 }
