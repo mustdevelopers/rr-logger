@@ -1,0 +1,29 @@
+<?php
+
+namespace MUST\RRLogger\Providers;
+
+use Illuminate\Support\ServiceProvider;
+use Illuminate\Contracts\Http\Kernel;
+use MUST\RRLogger\Http\Middleware\LogRequests;
+
+class RRLoggerServiceProvider extends ServiceProvider
+{
+    public function boot(Kernel $kernel)
+    {
+        if ($this->app->runningInConsole()) {
+            if (!class_exists('CreateRRLoggersTable')) {
+                $this->publishes([
+                    __DIR__.'/../database/migrations/create_rrloggers_table.php' => database_path('migrations/' . date('Y_m_d_His', time()) . '_create_rrloggers_table.php'),
+                ], 'migrations');
+            }
+
+            $this->publishes([
+                __DIR__.'/../config/rrlogger.php' => config_path('rrlogger.php'),
+            ], 'config');
+        }
+
+        $this->loadRoutesFrom(__DIR__.'/../../routes/api.php');
+
+        $kernel->appendMiddlewareToGroup('api', LogRequests::class); // Add it after all other middlewares
+    }
+}
