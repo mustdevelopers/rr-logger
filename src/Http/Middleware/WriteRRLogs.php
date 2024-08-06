@@ -23,6 +23,7 @@ class WriteRRLogs
             'user_type' => $request->user() ? get_class($request->user()) : null,
             'user_id' => auth()?->id(),
             'method' => $request->method(),
+            'request_type' => 'Incoming',
             'ip_address' => $request->ip(),
             'request' => json_encode($request->except($this->getHiddenFields())),
             'content' => $request->getContent(),

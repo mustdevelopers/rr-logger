@@ -36,6 +36,7 @@ class LoggingTest extends TestCase
             'method' => 'POST',
             'status' => 200,
             'success' => true,
+            'request_type' => 'Incoming'
         ]);
     }
 }

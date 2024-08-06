@@ -8,7 +8,11 @@ class CreateRRLoggersTable extends Migration
 {
     public function up()
     {
-        Schema::create('rrloggers', function (Blueprint $table) {
+        $table_name = config('rrlogger.table_name');
+        if (empty($table_name)) {
+            $table_name = 'rrloggers';
+        }
+        Schema::create($table_name, function (Blueprint $table) {
             $table->id();
             $table->string('user_type')->nullable();
             $table->unsignedBigInteger('user_id')->nullable();
@@ -18,6 +22,7 @@ class CreateRRLoggersTable extends Migration
             $table->ipAddress()->nullable();
             $table->text('content')->nullable();
             $table->text('request')->nullable();
+            $table->text('request_type')->nullable(); // incoming or outgoing
             $table->text('response')->nullable();
             $table->integer('milliseconds');
             $table->integer('status');
@@ -29,6 +34,10 @@ class CreateRRLoggersTable extends Migration
 
     public function down()
     {
-        Schema::dropIfExists('rrlogers');
+        $table_name = config('rrlogger.table_name');
+        if (empty($table_name)) {
+            $table_name = 'rrloggers';
+        }
+        Schema::dropIfExists($table_name);
     }
 }

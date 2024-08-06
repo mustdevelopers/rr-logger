@@ -4,6 +4,7 @@ namespace MUST\RRLogger\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Contracts\Http\Kernel;
+use MUST\RRLogger\Http\HttpClient\RRLoggerHttpClient;
 use MUST\RRLogger\Http\Middleware\WriteRRLogs;
 
 class RRLoggerServiceProvider extends ServiceProvider
@@ -25,5 +26,10 @@ class RRLoggerServiceProvider extends ServiceProvider
         $this->loadRoutesFrom(__DIR__.'/../../routes/api.php');
 
         $kernel->appendMiddlewareToGroup('api', WriteRRLogs::class); // Add it after all other middlewares
+
+        // Register the custom HTTP client
+        $this->app->singleton('http', function ($app) {
+            return RRLoggerHttpClient::class;
+        });
     }
 }
