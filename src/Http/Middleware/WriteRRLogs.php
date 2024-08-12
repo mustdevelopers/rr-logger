@@ -5,12 +5,16 @@ namespace MUST\RRLogger\Http\Middleware;
 use Closure;
 use MUST\RRLogger\Models\RRLogger;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class WriteRRLogs
 {
     public function handle(Request $request, Closure $next)
     {
         if (!defined('LARAVEL_START')) define('LARAVEL_START', microtime(true));
+
+        // Log request start
+        Log::info('Handling request', ['uri' => $request->getRequestUri()]);
 
         return $next($request);
     }
