@@ -3,6 +3,7 @@ namespace MUST\RRLogger\Http\HttpClient;
 
 use Illuminate\Support\Facades\Http as BaseHttp;
 use MUST\RRLogger\Models\RRLogger;
+use Illuminate\Http\Client\Response;
 
 class RRLoggerHttpClient extends BaseHttp
 {
@@ -46,21 +47,24 @@ class RRLoggerHttpClient extends BaseHttp
         // Start timing
         $start = microtime(true);
 
+        // Capture the request object
+        $request = app('request');
+
         // Execute the HTTP request
+        /** @var Response $response */
         $response = $callback();
 
         // Calculate elapsed time
         $end = microtime(true);
         $milliseconds = round(($end - $start) * 1000);
 
-        // Log request and response details
         RRLogger::create([
-            'endpoint' => $response->effectiveUri(),
-            'uri' => $response->effectiveUri(),
-            'method' => $response->request()->method(),
-            'ip_address' => request()->ip(),
+            'endpoint' => $request->fullUrl(), 
+            'uri' => $request->path(),
+            'method' => $request->method(),
+            'ip_address' => $request->ip(),
             'request_type' => 'Outgoing',
-            'request' => json_encode($response->request()->data()),
+            'request' => json_encode($request->all()), 
             'response' => $response->body(),
             'status' => $response->status(),
             'success' => $response->successful(),
