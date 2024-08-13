@@ -5,7 +5,6 @@ namespace MUST\RRLogger\Http\Middleware;
 use Closure;
 use MUST\RRLogger\Models\RRLogger;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 
 class WriteRRLogs
 {
@@ -13,25 +12,29 @@ class WriteRRLogs
     {
         if (!defined('LARAVEL_START')) define('LARAVEL_START', microtime(true));
 
-        // Log request start
-        Log::info('Handling request', ['uri' => $request->getRequestUri()]);
-
         return $next($request);
     }
 
     public function terminate(Request $request, $response): void
     {
+        $maxContentLength = config('rrlogger.max_content_length');
+
+        dd(config('rrlogger.hidden_fields'));
+
+        // Truncate request and response content if it exceeds the maximum length
+        $requestContent = $this->truncateContent($request->getContent(), $maxContentLength);
+        $responseContent = method_exists($response, 'content') ? $this->truncateContent($response->content(), $maxContentLength) : null;
+
         RRLogger::create([
             'endpoint' => $request->route() ? $request->route()->uri : '',
             'uri' => $request->getRequestUri(),
             'user_type' => $request->user() ? get_class($request->user()) : null,
             'user_id' => auth()?->id(),
             'method' => $request->method(),
-            'request_type' => 'Incoming',
             'ip_address' => $request->ip(),
             'request' => json_encode($request->except($this->getHiddenFields())),
-            'content' => $request->getContent(),
-            'response' => method_exists($response, 'content') ? $response->content() : null,
+            'content' => $requestContent,
+            'response' => $responseContent,
             'milliseconds' => $this->getTurnAroundTime(),
             'status' => method_exists($response, 'status') ? $response->status() : null,
             'success' => $response->isSuccessful(),
@@ -46,5 +49,10 @@ class WriteRRLogs
     private function getTurnAroundTime(): float|int
     {
         return round(round(microtime(true) - LARAVEL_START, 4) * 1000);
+    }
+
+    private function truncateContent(string $content, int $maxLength): string
+    {
+        return strlen($content) > $maxLength ? substr($content, 0, $maxLength) : $content;
     }
 }

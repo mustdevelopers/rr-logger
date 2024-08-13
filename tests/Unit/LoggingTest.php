@@ -21,6 +21,8 @@ class LoggingTest extends TestCase
                 'success' => true,
             ];
         });
+
+        dd(config('rrlogger.max_content_length'));
     }
     public function test_create_rrlogger_for_incoming_requests()
     {

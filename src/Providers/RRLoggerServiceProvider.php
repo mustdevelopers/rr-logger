@@ -19,7 +19,7 @@ class RRLoggerServiceProvider extends ServiceProvider
             }
 
             $this->publishes([
-                __DIR__.'/../config/rrlogger.php' => config_path('rrlogger.php'),
+                __DIR__.'/../config/config.php' => config_path('rrlogger.php'),
             ], 'config');
         }
 

@@ -22,7 +22,7 @@ class CreateRRLoggersTable extends Migration
             $table->ipAddress()->nullable();
             $table->text('content')->nullable();
             $table->text('request')->nullable();
-            $table->text('request_type')->nullable(); // incoming or outgoing
+            $table->string('request_type')->nullable(); // incoming or outgoing
             $table->text('response')->nullable();
             $table->integer('milliseconds');
             $table->integer('status');
