@@ -19,8 +19,6 @@ class WriteRRLogs
     {
         $maxContentLength = config('rrlogger.max_content_length');
 
-        dd(config('rrlogger.hidden_fields'));
-
         // Truncate request and response content if it exceeds the maximum length
         $requestContent = $this->truncateContent($request->getContent(), $maxContentLength);
         $responseContent = method_exists($response, 'content') ? $this->truncateContent($response->content(), $maxContentLength) : null;
@@ -33,6 +31,7 @@ class WriteRRLogs
             'method' => $request->method(),
             'ip_address' => $request->ip(),
             'request' => json_encode($request->except($this->getHiddenFields())),
+            'request_type' => 'Incoming',
             'content' => $requestContent,
             'response' => $responseContent,
             'milliseconds' => $this->getTurnAroundTime(),

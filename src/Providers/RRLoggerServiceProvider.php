@@ -24,6 +24,9 @@ class RRLoggerServiceProvider extends ServiceProvider
         }
 
         $this->loadRoutesFrom(__DIR__.'/../../routes/api.php');
+        $this->mergeConfigFrom(
+            __DIR__.'/../config/config.php', 'rrlogger'
+        );
 
         // Register the custom HTTP client
         $this->app->singleton('http', function ($app) {

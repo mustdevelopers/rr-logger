@@ -4,7 +4,6 @@ namespace MUST\RRLogger\Tests;
 
 use CreateRRLoggersTable;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use MUST\RRLogger\Http\Kernel;
 use MUST\RRLogger\Providers\RRLoggerServiceProvider;
 
 class TestCase extends \Orchestra\Testbench\TestCase
