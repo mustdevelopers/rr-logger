@@ -44,23 +44,18 @@ class RRLoggerHttpClient extends BaseHttp
 
     private static function logRequestAndResponse(callable $callback)
     {
-        // Start timing
         $start = microtime(true);
 
-        // Capture the request object
         $request = app('request');
 
-        // Execute the HTTP request
         /** @var Response $response */
         $response = $callback();
 
-        // Calculate elapsed time
         $end = microtime(true);
         $milliseconds = round(($end - $start) * 1000);
 
         RRLogger::create([
             'endpoint' => $request->fullUrl(), 
-            'uri' => $request->path(),
             'method' => $request->method(),
             'ip_address' => $request->ip(),
             'request_type' => 'Outgoing',

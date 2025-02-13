@@ -14,7 +14,6 @@ class RRLoggerFactory extends Factory
         $startTime = microtime(true) * 1000;
         return [
             'endpoint' => fake()->slug(),
-            'uri' => fake()->slug(),
             'method' => fake()->randomElement(['post', 'get']),
             'milliseconds' => microtime(true) * 1000 - $startTime,
             'status' => 200,

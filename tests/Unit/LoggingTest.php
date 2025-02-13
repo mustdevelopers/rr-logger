@@ -12,31 +12,44 @@ class LoggingTest extends TestCase
 {
     public function test_that_middleware_runs()
     {
-        // Given we have a request
         $request = new Request();
 
-        (new WriteRRLogs())->handle($request, function () {
+        $response = (new WriteRRLogs())->handle($request, function () {
             return (object) [
                 'status' => 200,
                 'success' => true,
             ];
         });
+
+        $this->assertEquals(200, $response->status);
+        $this->assertTrue($response->success);
     }
     public function test_create_rrlogger_for_incoming_requests()
     {
         $response = $this->postJson('/api/test-endpoint', [
             'some_field' => 'some_value',
+            'password' => '1234',
         ]);
 
         $response->assertStatus(200);
 
-        // Assert that the RRLogger record was created
+        $response->assertJsonStructure([
+            'status',
+        ]);
+
         $this->assertDatabaseHas('rrloggers', [
-            'endpoint' => 'api/test-endpoint',
-            'method' => 'POST',
-            'status' => 200,
-            'success' => 1,
-            'request_type' => 'Incoming',
+            "id" => 1,  
+            "user_id" => null,
+            "endpoint" => "/api/test-endpoint",
+            "method" => "POST",
+            "ip_address" => "127.0.0.1",
+            "request" => '{"some_field":"some_value"}',
+            "request_type" => "Incoming",
+            "response" => '{"status":"success"}',
+            "status" => 200,
+            "success" => 1,
+            "message" => null
+
         ]);
     }
 
@@ -47,19 +60,17 @@ class LoggingTest extends TestCase
         $url = 'https://example.com/api/test-endpoint';
         $data = ['key' => 'value'];
 
-        // Mock the HTTP request
         RRLoggerHttpClient::fake([
             $url => RRLoggerHttpClient::response(['response_key' => 'response_value'], 200),
         ]);
 
         $response = RRLoggerHttpClient::post($url, $data);
 
-        // Check if the RRLogger record was created
         $this->assertDatabaseHas('rrloggers', [
             'status' => 200,
             'success' => 1,
             'request_type' => "Outgoing",
-            'response' => $response->body(),
+            'response' => json_encode(['response_key' => 'response_value']), // Ensure the response is correctly logged
         ]);
     }
 }

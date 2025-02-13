@@ -14,13 +14,10 @@ class CreateRRLoggersTable extends Migration
         }
         Schema::create($table_name, function (Blueprint $table) {
             $table->id();
-            $table->string('user_type')->nullable();
             $table->unsignedBigInteger('user_id')->nullable();
             $table->string('endpoint');
-            $table->string('uri');
             $table->string('method');
             $table->ipAddress()->nullable();
-            $table->text('content')->nullable();
             $table->text('request')->nullable();
             $table->string('request_type')->nullable(); // incoming or outgoing
             $table->text('response')->nullable();
