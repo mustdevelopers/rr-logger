@@ -19,20 +19,15 @@ class WriteRRLogs
     {
         $maxContentLength = config('rrlogger.max_content_length');
 
-        // Truncate request and response content if it exceeds the maximum length
-        $requestContent = $this->truncateContent($request->getContent(), $maxContentLength);
         $responseContent = method_exists($response, 'content') ? $this->truncateContent($response->content(), $maxContentLength) : null;
 
         RRLogger::create([
-            'endpoint' => $request->route() ? $request->route()->uri : '',
-            'uri' => $request->getRequestUri(),
-            'user_type' => $request->user() ? get_class($request->user()) : null,
+            'endpoint' => $request->getRequestUri(),
             'user_id' => auth()?->id(),
             'method' => $request->method(),
             'ip_address' => $request->ip(),
             'request' => json_encode($request->except($this->getHiddenFields())),
             'request_type' => 'Incoming',
-            'content' => $requestContent,
             'response' => $responseContent,
             'milliseconds' => $this->getTurnAroundTime(),
             'status' => method_exists($response, 'status') ? $response->status() : null,
